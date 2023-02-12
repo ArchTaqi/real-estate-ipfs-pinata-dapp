@@ -15,7 +15,7 @@ JWT:
 export const pinata_api_key = "";
 export const pinata_api_secret = "";
 export const pinata_gateway_jwt = "";
-export const pinata_ipfs_gateway = "";
+export const pinata_ipfs_gateway_name = "archtaqi";
 
 export const readHeader = {
 	"Content-Type": "application/json",

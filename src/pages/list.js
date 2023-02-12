@@ -1,8 +1,23 @@
-import { sendJsonToIPFS } from "@/components/pinata";
+import { sendFileToIPFS, sendJsonToIPFS } from "@/components/pinata";
+import { useState } from "react";
+import { pinata_gateway_jwt, pinata_ipfs_gateway_name } from "../config/config"
 
 export default function List() {
 
-	async function listProperty() {
+  const [ picCid, setPicCid ] = useState('');
+  const [ picture, setPicture ] = useState('pinatalogo.png');
+
+  async function updatePic(e) {
+    const file = e.target.files[ 0 ];
+    const getCid = await sendFileToIPFS(file);
+    console.log(getCid);
+    setPicCid(getCid);
+    const ipfsPath = "https://" + pinata_ipfs_gateway_name + ".mypinata.cloud/ipfs/" + getCid + "?pinataGatewayToken=" + pinata_gateway_jwt;
+    setPicture(ipfsPath);
+  }
+
+
+  async function listProperty() {
     let gettitle = document.getElementById('title').value.toString();
     let getprice = document.getElementById('price').value.toString();
     let getyear = document.getElementById('year').value.toString();
@@ -17,10 +32,11 @@ export default function List() {
 
     if (!gettitle || !getprice || !getyear || !getarea || !getaddress
       || !getcountry || !getcity || !getzip
-      || !getsellername || !getselleremail || !getsellerphone) {
+      || !getsellername || !getselleremail || !getsellerphone
+    || !picCid) {
         console.log("Taqi");
     } else {
-        const receipt = await sendJsonToIPFS(gettitle, getprice, getyear, getarea, getaddress, getcountry, getcity, getzip, getsellername, getselleremail, getsellerphone);
+        const receipt = await sendJsonToIPFS(gettitle, getprice, getyear, getarea, getaddress, getcountry, getcity, getzip, getsellername, getselleremail, getsellerphone, picCid);
     }
 	}
 
@@ -85,9 +101,12 @@ export default function List() {
 
         <div className="row">
           <div className="col-md-6">
-            <label className="form-label">Upload Property Photo</label>
-            <input className="form-control" type="file" id="formFile"/>
+            <label className="form-label">Add Property Picture</label>
+            <input className="form-control" type="file" id="propertyPicture" onChange={updatePic} />
           </div>
+          <img className="bd-placeholder-img" src={picture} width="100%" height="100%" aria-hidden="true"
+            preserveAspectRation="xMidYMid slice"
+          focusable="false" />
         </div>
         <br />
 
@@ -108,7 +127,7 @@ export default function List() {
 
         <div className="row">
           <div className="col-12 d-grid gap-2 col-6 mx-auto">
-            <button type="submit" onClick={listProperty} className="btn btn-danger btn-lg">Save</button>
+            <button type="submit" onClick={listProperty} className="btn btn-danger btn-lg">List Property</button>
           </div>
         </div>
       </form>
