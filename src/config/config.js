@@ -1,30 +1,31 @@
-
-
 /* Pinata Keys ********************************
-
 API Key: 
 API Secret: 
 JWT: 
-
-Pinata Gateway:
-
-JWT: 
-
+GATEWAY:
 */
 
-export const pinata_api_key = "";
-export const pinata_api_secret = "";
-export const pinata_gateway_jwt = "";
-export const pinata_ipfs_gateway_name = "archtaqi";
+export const PINATA_API_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY;
+export const PINATA_API_SECRET = process.env.NEXT_PUBLIC_PINATA_API_SECRET;
+export const PINATA_GATEWAY_JWT = process.env.NEXT_PUBLIC_PINATA_GATEWAY_JWT;
+// Do NOT ADD .mypinata.cloud... just your gateway name.
+export const PINATA_GATEWAY_NAME = process.env.NEXT_PUBLIC_PINATA_GATEWAY_NAME;
 
 export const readHeader = {
-	"Content-Type": "application/json",
+    "Content-Type": "application/json",
 }
 
 export const getHeader = {
-	headers: {
-		'Content-Type': 'application/json',
-		'pinata_api_key': pinata_api_key,
-		'pinata_api_key_secret': pinata_api_secret,
+    headers: {
+		pinata_api_key: PINATA_API_KEY,
+		pinata_secret_api_key: PINATA_API_SECRET,
+	}
+}
+
+export const sendJsonHeader = {
+    headers: {
+		'Content-Type': 'application/json', 
+		pinata_api_key: PINATA_API_KEY,
+		pinata_secret_api_key: PINATA_API_SECRET,
 	}
 }

@@ -1,6 +1,6 @@
-import { sendFileToIPFS, sendJsonToIPFS } from "@/components/pinata";
+import { sendFileToIPFS, sendJSONToIPFS } from "@/components/pinata";
 import { useState } from "react";
-import { pinata_gateway_jwt, pinata_ipfs_gateway_name } from "../config/config"
+import { PINATA_GATEWAY_JWT, PINATA_GATEWAY_NAME } from "../config/config"
 
 export default function List() {
 
@@ -12,31 +12,24 @@ export default function List() {
     const getCid = await sendFileToIPFS(file);
     console.log(getCid);
     setPicCid(getCid);
-    const ipfsPath = "https://" + pinata_ipfs_gateway_name + ".mypinata.cloud/ipfs/" + getCid + "?pinataGatewayToken=" + pinata_gateway_jwt;
+    const ipfsPath = "https://" + PINATA_GATEWAY_NAME + ".mypinata.cloud/ipfs/" + getCid + "?pinataGatewayToken=" + PINATA_GATEWAY_JWT;
     setPicture(ipfsPath);
   }
 
-
   async function listProperty() {
-    let gettitle = document.getElementById('title').value.toString();
-    let getprice = document.getElementById('price').value.toString();
-    let getyear = document.getElementById('year').value.toString();
-    let getarea = document.getElementById('area').value.toString();
-    let getaddress = document.getElementById('address').value.toString();
-    let getcountry = document.getElementById('country').value.toString();
-    let getcity = document.getElementById('city').value.toString();
-    let getzip = document.getElementById('zip').value.toString();
-    let getsellername = document.getElementById('sellername').value.toString();
-    let getselleremail = document.getElementById('selleremail').value.toString();
-    let getsellerphone = document.getElementById('sellerphone').value.toString();
+    let picture = picCid;
+    let title = document.getElementById('title').value.toString();
+    let price = document.getElementById('price').value.toString();
 
-    if (!gettitle || !getprice || !getyear || !getarea || !getaddress
-      || !getcountry || !getcity || !getzip
-      || !getsellername || !getselleremail || !getsellerphone
-    || !picCid) {
-        console.log("Taqi");
+    if( !title || !price) return
+
+    const receipt = await sendJSONToIPFS(title, price, picture);
+    if (receipt !=  '') {
+      let confirmation = 'Listed Successfully';
+      alert(confirmation);
     } else {
-        const receipt = await sendJsonToIPFS(gettitle, getprice, getyear, getarea, getaddress, getcountry, getcity, getzip, getsellername, getselleremail, getsellerphone, picCid);
+      let confirmation = 'Info not completed';
+      alert(confirmation);
     }
 	}
 
@@ -62,70 +55,15 @@ export default function List() {
 
         <div className="row">
           <div className="col-md-6">
-            <label className="form-label">Year Built</label>
-            <div className="input-group">
-              <div className="input-group-text">#</div>
-              <input type="text" className="form-control" id="year" placeholder="2009"/>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <label className="form-label">Area</label>
-            <div className="input-group">
-              <div className="input-group-text">Marla</div>
-              <input type="text" className="form-control" id="area" placeholder="5"/>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-12">
-            <label className="form-label">Address</label>
-            <textarea className="form-control" id="address" rows="3" placeholder="Apartment, studio, or floor"></textarea>
-          </div>
-        </div>
-        
-        <div className="row">
-          <div className="col-md-4">
-            <label className="form-label">Country</label>
-            <input type="text" className="form-control" id="country"/>
-          </div>
-          <div className="col-md-4">
-            <label className="form-label">City</label>
-            <input type="text" className="form-control" id="city"/>
-          </div>
-          <div className="col-md-4">
-            <label className="form-label">Zip</label>
-            <input type="text" className="form-control" id="zip"/>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-6">
             <label className="form-label">Add Property Picture</label>
             <input className="form-control" type="file" id="propertyPicture" onChange={updatePic} />
-          </div>
-          <img className="bd-placeholder-img" src={picture} width="100%" height="100%" aria-hidden="true"
-            preserveAspectRation="xMidYMid slice"
-          focusable="false" />
+            <img className="bd-placeholder-img" src={picture} width="100%" height="100%" aria-hidden="true" focusable="false" />
+            </div>
+          <br /><br /><br />
         </div>
-        <br />
+        <br /><br /><br />
 
-        <div className="row">
-          <div className="col-md-4">
-            <label className="form-label">Seller Name</label>
-            <input type="text" className="form-control" id="sellername"/>
-          </div>
-          <div className="col-md-4">
-            <label className="form-label">Seller Email</label>
-            <input type="text" className="form-control" id="selleremail"/>
-          </div>
-          <div className="col-md-4">
-            <label className="form-label">Seller Phone</label>
-            <input type="text" className="form-control" id="sellerphone"/>
-          </div>
-        </div>
-
-        <div className="row">
+        <div className="row mt-5">
           <div className="col-12 d-grid gap-2 col-6 mx-auto">
             <button type="submit" onClick={listProperty} className="btn btn-danger btn-lg">List Property</button>
           </div>
